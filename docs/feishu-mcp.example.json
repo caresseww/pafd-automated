@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "lark-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@larksuiteoapi/lark-mcp",
+        "mcp",
+        "-a",
+        "YOUR_FEISHU_APP_ID",
+        "-s",
+        "YOUR_FEISHU_APP_SECRET",
+        "--oauth"
+      ]
+    },
+    "feishu-remote-http": {
+      "url": "https://mcp.feishu.cn/mcp/YOUR_PERSONAL_SERVER_PATH",
+      "headers": {}
+    }
+  }
+}
