@@ -8,3 +8,10 @@ account
 /account.txt
 /sess.data
 /dailyFudan3.1.py
+
+# Feishu token cache / local secrets (never commit)
+.feishu/
+*.feishu.token.json
+feishu_token_cache.json
+__pycache__/
+*.py[cod]
