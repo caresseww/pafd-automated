@@ -1,4 +1,6 @@
 # Feishu / Lark long-lived access setup
+
+科学问题层与分析角扩增（写入多维表格）见 `docs/science-question-expansion.md`。
 #
 # Goal: keep Cloud Agent / scripts able to call Feishu OpenAPI without relying on
 # the short-lived personal remote-MCP URL (≈7 days).
