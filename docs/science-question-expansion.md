@@ -66,3 +66,7 @@ GSE281618、GSE278973、GSE155172、GSE234153、GSE166152、GSE13516、GSE169390
 - 8.7 `recvuDiAMHQItr`
 - 8.8 `recvuDiAMHYTuA`
 - 8.9 `recvuDiAMHyucv`
+
+后续工作台课题 / Idea 对账见 `docs/workbench-proof-crosswalk.md`（2026-09-09）。
+每人每题如何用转录组库赋能见 `docs/workbench-tx-empowerment.md`（2026-09-10）。
+不新增第 10 层。第三引擎是本队列句子，不是第二份题库。
