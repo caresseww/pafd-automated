@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>发育坐标 · 七个方向分析方案</title>
+<style>
+  :root {
+    --ink: #1c1916;
+    --muted: #5c564e;
+    --paper: #f6f1e8;
+    --card: #fffdf8;
+    --line: #d9d0c2;
+    --rust: #8c3b2a;
+    --rust-soft: #f3e4de;
+    --sage: #2f5d4a;
+    --sage-soft: #e4efe8;
+    --gold: #8a6a22;
+    --gold-soft: #f6edd4;
+    --sky: #2b4f6e;
+    --sky-soft: #e4edf4;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font: 16px/1.65 "Source Han Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+  }
+  header.hero {
+    padding: 2.4rem 1.4rem 1.6rem;
+    background: linear-gradient(180deg, #2a211c 0%, #3d2f28 100%);
+    color: #f6f1e8;
+  }
+  header.hero .wrap, main, footer { max-width: 980px; margin: 0 auto; }
+  header.hero h1 { margin: 0 0 .4rem; font-size: 1.75rem; letter-spacing: .04em; font-weight: 650; }
+  header.hero p { margin: .35rem 0; color: #e4d8cc; }
+  .badge-row { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1rem; }
+  .badge {
+    display: inline-block;
+    padding: .15rem .55rem;
+    border-radius: 999px;
+    font-size: .78rem;
+    letter-spacing: .02em;
+  }
+  .b-go { background: var(--sage-soft); color: var(--sage); }
+  .b-wait { background: var(--gold-soft); color: var(--gold); }
+  .b-no { background: var(--rust-soft); color: var(--rust); }
+  .b-cond { background: var(--sky-soft); color: var(--sky); }
+  .b-on-dark { background: #5a4338; color: #f6f1e8; }
+  nav.toc {
+    position: sticky; top: 0; z-index: 5;
+    background: rgba(246,241,232,.94);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+  }
+  nav.toc .wrap {
+    max-width: 980px; margin: 0 auto;
+    display: flex; flex-wrap: wrap; gap: .45rem .7rem;
+    padding: .55rem 1.2rem;
+  }
+  nav.toc a {
+    color: var(--sky); text-decoration: none; font-size: .86rem;
+    border-bottom: 1px solid transparent;
+  }
+  nav.toc a:hover { border-color: var(--sky); }
+  main { padding: 1.4rem 1.2rem 4rem; }
+  h2 { margin: 2rem 0 .6rem; font-size: 1.25rem; }
+  h3 { margin: 0 0 .45rem; font-size: 1.12rem; }
+  .lead { color: var(--muted); margin-top: 0; }
+  .order {
+    display: grid; gap: .5rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin: 1rem 0 1.6rem;
+  }
+  .order a {
+    display: block; padding: .7rem .8rem; background: var(--card);
+    border: 1px solid var(--line); border-radius: 10px;
+    text-decoration: none; color: inherit;
+  }
+  .order a strong { display: block; color: var(--rust); font-size: .82rem; }
+  .dir {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.15rem 1.2rem 1.25rem;
+    margin: 1.15rem 0 1.6rem;
+    box-shadow: 0 1px 0 rgba(28,25,22,.04);
+  }
+  .dir header { display: flex; flex-wrap: wrap; gap: .45rem .7rem; align-items: baseline; margin-bottom: .5rem; }
+  .dir header .id { font-weight: 700; color: var(--rust); letter-spacing: .06em; }
+  .grid { display: grid; gap: .8rem; grid-template-columns: 1fr; }
+  @media (min-width: 820px) {
+    .grid.two { grid-template-columns: 1fr 1fr; }
+  }
+  .box { background: #faf6ef; border: 1px solid var(--line); border-radius: 10px; padding: .75rem .85rem; }
+  .box h4 { margin: 0 0 .35rem; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .box.go { background: var(--sage-soft); border-color: #c5d9cc; }
+  .box.no { background: var(--rust-soft); border-color: #e4c6bd; }
+  .box.wait { background: var(--gold-soft); border-color: #ead9a8; }
+  ol.steps { margin: .3rem 0 0; padding-left: 1.2rem; }
+  ol.steps li { margin: .35rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  th, td { border-bottom: 1px solid var(--line); text-align: left; padding: .4rem .35rem; vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: .78rem; letter-spacing: .04em; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .86em; background: #efe8db; padding: .05em .3em; border-radius: 4px; }
+  details { margin: .45rem 0 0; }
+  details summary { cursor: pointer; color: var(--sky); font-weight: 600; }
+  footer { padding: 1.2rem; color: var(--muted); font-size: .85rem; }
+  @media print {
+    nav.toc, .noprint { display: none; }
+    .dir { break-inside: avoid; box-shadow: none; }
+    header.hero { background: #fff; color: #000; }
+    header.hero p { color: #333; }
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <p style="margin:0 0 .4rem;letter-spacing:.18em;font-size:.75rem;opacity:.8;">转录组库 · 发育坐标 · 2026-09-10</p>
+    <h1>发育部分：七个方向的分析方案</h1>
+    <p>先不管有没有下完。每个方向单独开工：问句、对象、步骤、出哪张图、能写哪句、哪句现在写不成。</p>
+    <p>对象互不合并。供者是 n。一张图只报组成、校正后状态、程序坐标中的一种。不新增第 10 层。</p>
+    <div class="badge-row">
+      <span class="badge b-on-dark">Ⅰ-1～Ⅰ-4、Ⅰ-6 现在出图</span>
+      <span class="badge b-on-dark">Ⅰ-5 方案先行，矩阵后跑</span>
+      <span class="badge b-on-dark">Ⅰ-7 只写限制页</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc noprint">
+  <div class="wrap">
+    <a href="#order">开工顺序</a>
+    <a href="#rules">五条条件</a>
+    <a href="#i4">Ⅰ-4 三时钟</a>
+    <a href="#i1">Ⅰ-1 工厂</a>
+    <a href="#i2">Ⅰ-2 出生窗</a>
+    <a href="#i3">Ⅰ-3 分选极</a>
+    <a href="#i6">Ⅰ-6 尺子</a>
+    <a href="#i5">Ⅰ-5 回肠结肠</a>
+    <a href="#i7">Ⅰ-7 量表</a>
+    <a href="#objects">对象代号</a>
+  </div>
+</nav>
+
+<main>
+<section id="order">
+  <h2>开工顺序</h2>
+  <p class="lead">先锁纪律和分母，再谈极和尺子。肠分段和量表放后面，不挡前面出图。</p>
+  <div class="order">
+    <a href="#i4"><strong>第 1 步 · 现在</strong>Ⅰ-4 三时钟与供者单元。空值图先交。</a>
+    <a href="#i1"><strong>第 2 步 · 现在</strong>Ⅰ-1 胎肝 ∥ 胎骨髓。用已锁中位数出并列图。</a>
+    <a href="#i2"><strong>第 3 步 · 现在</strong>Ⅰ-2 出生窗与日龄轴分列。禁止连轴。</a>
+    <a href="#i3"><strong>第 4 步 · 现在</strong>Ⅰ-3 分选极对发生层。不进血饼。</a>
+    <a href="#i6"><strong>第 5 步 · 现在</strong>Ⅰ-6 HLA 模块暂当代尺。四态不再训。</a>
+    <a href="#i5"><strong>第 6 步 · 方案已写</strong>Ⅰ-5 回肠 vs 结肠。有矩阵再跑。</a>
+    <a href="#i7"><strong>第 7 步 · 现在写限制</strong>Ⅰ-7 坐标草案，不做量表。</a>
+  </div>
+</section>
+
+<section id="rules" class="dir">
+  <header>
+    <span class="id">条件 1.1–1.5</span>
+    <span class="badge b-cond">每张图过一遍</span>
+    <h3 style="flex-basis:100%;">发育所有方向共用的五条条件，不是第五个分析</h3>
+  </header>
+  <ol class="steps">
+    <li><strong>1.1</strong> 发现检验的 n 是供者，不是细胞。伪 bulk 按供者×谱系。F28 与 F29 不得平均。</li>
+    <li><strong>1.2</strong> 孕龄、矫正胎龄、日龄同表分列，互不替代。缺字段留空，不插补。</li>
+    <li><strong>1.3</strong> 对照按原文诊断写。Pan-GI 早产切片不是健康早产。</li>
+    <li><strong>1.4</strong> 先证明 NRBC 没被当成髓系，再谈髓系极。上皮门槛不得杀光中性粒细胞。</li>
+    <li><strong>1.5</strong> 一张图只报告组成、校正后状态、程序坐标中的一种。</li>
+  </ol>
+</section>
+
+<article id="i4" class="dir">
+  <header>
+    <span class="id">Ⅰ-4</span>
+    <span class="badge b-go">现在可分析</span>
+    <h3 style="flex-basis:100%;">孕龄、日龄、寿命箱必须分列，不能合成一把新生儿钟</h3>
+  </header>
+  <p>问句：采样框不同、分母不同、左端也不同。把它们连成一条曲线，是不是在造假？</p>
+  <p><strong>已锁主句：</strong>三把钟分列；供者是统计单元；空值不插补。</p>
+  <div class="grid two">
+    <div class="box go">
+      <h4>现在就能做</h4>
+      对象 A / B / E 已落地。样本矩阵约 1189 行。出三时钟字段空值图，和「newborn 门户标签」反例表。
+    </div>
+    <div class="box no">
+      <h4>现在写不成</h4>
+      一条从胎儿到成人的年龄轴。用 E 的 Infants 箱代表出生 48 小时。细胞数当 n。
+    </div>
+  </div>
+  <h4>对象</h4>
+  <table>
+    <tr><th>对象</th><th>数据</th><th>钟</th><th>口径</th></tr>
+    <tr><td>A</td><td>GSE326288 新鲜静脉 Ficoll PBMC</td><td>出生 48h 窗</td><td>早产 / 足月 / 同研究成人。个体周数抄不齐则保持三档，禁止插补。</td></tr>
+    <tr><td>B</td><td>GSE271413 裂红全血</td><td>生后日龄</td><td>第 1 周已越过 48h。不可与 A 连日龄。</td></tr>
+    <tr><td>E</td><td>GSE233321 冻 PBMC</td><td>寿命箱</td><td>左端 ≥2 月，不是早产 48h。</td></tr>
+  </table>
+  <details open>
+    <summary>分析步骤</summary>
+    <ol class="steps">
+      <li>从样本矩阵拉出研究、供者、GA、PMA、PNA、门户年龄标签、制备（PBMC / 全血 / 冻存）。</li>
+      <li>三张缺失热图：GA、PMA、PNA 各一。分母是行，不是研究个数。</li>
+      <li>反例表：把 23–31 周被标成 <code>newborn</code> 的研究点名，只作口径反例。</li>
+      <li>对象清单图：A、B、E 三列，写清制备、左端、能不能当供者。GSE301989 池化另格，不作供者。</li>
+      <li>不在这一步做整合、不跑 scVI、不画联合 UMAP。</li>
+    </ol>
+  </details>
+  <div class="grid two">
+    <div class="box">
+      <h4>图</h4>
+      Fig I4-1 三时钟空值率。<br>Fig I4-2 对象分列（A≠B≠E）。<br>Fig I4-3 newborn 标签反例。
+    </div>
+    <div class="box">
+      <h4>产出</h4>
+      全组后面每张发育图的图注模板。空值率进 7.6 监护指控时只引用，不在本方向重做降维。
+    </div>
+  </div>
+</article>
+
+<article id="i1" class="dir">
+  <header>
+    <span class="id">Ⅰ-1</span>
+    <span class="badge b-go">现在可分析 · 重打已锁</span>
+    <h3 style="flex-basis:100%;">胎肝交班给胎骨髓时，髓系和 HLA 走到哪一步</h3>
+  </header>
+  <p>问句：造血工厂交接给出生窗一个灰色发生分母。卵黄囊 / AGM 是应补上游，不是本季主图。</p>
+  <p><strong>已锁主句：</strong>肝 CD45+ 单核 13 人 HLA 中位 <strong>1.61</strong>；整倍体 FBM 单核 8 人 <strong>0.41</strong>。跨研究并列，不是同体。FBM 不得写髓系特异。旧 0.81 作废。</p>
+  <div class="grid two">
+    <div class="box go">
+      <h4>现在就能做</h4>
+      用已锁人×门控表出并列图。肝侧阴性对照：同人单核 HLA 高于 T/B（13 对中位差 1.24），可写髓系特异。FBM 单核 0.41 与 T/B 0.37 同档，停写骨髓髓系特异。
+    </div>
+    <div class="box wait">
+      <h4>下载后加厚，不改主句</h4>
+      Goh 卵黄囊/胚肝、Calvanese AGM：只进上游附录。GSE158702 进 Ⅰ-5，不进本方向主图。E-ANND-5 / GSE156793 只加厚播种，不抬主图。
+    </div>
+  </div>
+  <h4>对象（分研究并列）</h4>
+  <table>
+    <tr><th>研究</th><th>门控</th><th>过门供者</th><th>单核 HLA</th><th>禁令</th></tr>
+    <tr><td>E-MTAB-7407 胎肝</td><td>CD45+ 单核</td><td>13 人（F4 仅 13 细胞未过 20）</td><td>中位 1.61</td><td>不与循环血平均。本批 tar 无卵黄囊。</td></tr>
+    <tr><td>Jardine 整倍体 FBM</td><td>单核</td><td>8 人；SB19PCW 单列</td><td>中位 0.41</td><td>Ts21 D1–D4（0.83–1.03）单列。pooled 已丢。</td></tr>
+    <tr><td>皮肤 5 / 肾 2</td><td>同批播种</td><td>附录</td><td>肝高于外周</td><td>不进标题。不是 NICU 关心的皮肤病或肾病。</td></tr>
+  </table>
+  <details open>
+    <summary>分析步骤</summary>
+    <ol class="steps">
+      <li>不再重算旧 r17 肝 0.81。以 <code>i1_20260907</code> 人×门控表为输入。</li>
+      <li>Fig I1-1：肝 vs FBM 两列箱线/点图，点=供者。标题只写「跨研究并列，不是同体交班」。</li>
+      <li>Fig I1-2：同供者单核 vs T/B HLA。肝过门写髓系特异；FBM 不过门，图注写停写。</li>
+      <li>Fig I1-3：Ts21 单列，不并进整倍体主坐标。</li>
+      <li>附录：皮肤/肾播种。CD34+ <code>donor_id</code> 是 lane 池化，不作供者。CITE 无 ADT，不画膜 HLA-DR。</li>
+      <li>卵黄囊缺席写成结果句：「7407 本批 69/69 tar 可读，无卵黄囊。」本地 E-MTAB-11673 单供者 F158 不得改写这句。</li>
+    </ol>
+  </details>
+  <div class="box no">
+    <h4>假证明</h4>
+    「这名胎儿从肝交到了骨髓」；FBM 低 HLA 是髓系特异；已经有卵黄囊；早产儿缺的是细胞定量。
+  </div>
+  <p>交给 Ⅰ-2 / Ⅰ-3：出生窗单核 HLA 0.65 落在肝 1.61 与成人 1.34 之间、并高于 FBM 0.41——只作灰色分母，不对 A/B 合池。</p>
+</article>
+
+<article id="i2" class="dir">
+  <header>
+    <span class="id">Ⅰ-2</span>
+    <span class="badge b-go">现在可分析 · 数字已锁</span>
+    <h3 style="flex-basis:100%;">出生 48 小时窗口，循环髓系翻转了哪一段</h3>
+  </header>
+  <p>问句：第一口呼吸 / 菌 / 奶在小时尺度翻转了什么？这和日龄轴、寿命箱是不是同一把钟？</p>
+  <p><strong>已锁主句：</strong>循环髓系是三把钟，不是一把年龄轴；出生窗单核 HLA 低于同研究成人且髓系特异。</p>
+  <table>
+    <tr><th>已锁数字</th><th>写法</th></tr>
+    <tr><td>A 单核 HLA 中位 0.65 vs 同研究成人 1.34</td><td>p=1.5×10⁻⁴，留一法 19/19。T/B 不过门（p=0.28）→ 髓系特异。</td></tr>
+    <tr><td>A 早产 vs 足月单核 HLA</td><td>p=0.29 不过门。主句必须是出生窗对成人，不能写成早产对足月。</td></tr>
+    <tr><td>A NRBC 组成</td><td>出生窗 0.050 vs 成人 0.002（p=7.4×10⁻⁵）。饼用词典，CellTypist 粒中位=0。</td></tr>
+    <tr><td>B 单核 HLA</td><td>第 1 周 0.52 → 第 1 月 1.32 → 第 2 月 1.38。未配对 week1 vs month1 p=0.0025；3 人配对不过门。</td></tr>
+    <tr><td>B 脐血 vs 第 1 周静脉</td><td>脐血 HLA 1.33 高于第 1 周（p=0.0047）。脐血 ≠ DOL1，也 ≠ A 的 48h。</td></tr>
+    <tr><td>S8 促炎−抑制极</td><td>失败，不恢复四态。</td></tr>
+  </table>
+  <details open>
+    <summary>分析步骤</summary>
+    <ol class="steps">
+      <li>A、B、E 三套分别质控。线粒体与 doublet 阈值分对象设定。NRBC 先于粒/单核/淋巴（接 1.4）。</li>
+      <li>注释：CellTypist + 冻结粒细胞词典（CEACAM8/MPO/ELANE/AZU1）。组成以供者等权。</li>
+      <li>Fig I2-A：出生窗单核 HLA，早产/足月/成人三点，供者点。图题只写对成人。</li>
+      <li>Fig I2-B：B 的 week1 / month1 / month2 分箱，3 人连线单独成小图，不升主效应。</li>
+      <li>Fig I2-E：寿命箱左端挖洞，标明 ≥2 月看不见 48h。</li>
+      <li>Fig I2-NRBC：词典组成，不把 CellTypist 零粒当成生物学。</li>
+      <li>禁止：A+B 联合 scVI；A+B 一条日龄曲线；把胃液 0–72h 画进本方向循环饼。</li>
+    </ol>
+  </details>
+  <div class="grid two">
+    <div class="box go"><h4>产出</h4>三时钟对照图，供肠坏死成熟度子问、晚发易感窗子问引用。不做成 R 包诊断尺。</div>
+    <div class="box no"><h4>假证明</h4>早产对足月主效应；MDSC；一条胎儿→成人曲线；GSE233321 Infants = 早产 48h。</div>
+  </div>
+</article>
+
+<article id="i3" class="dir">
+  <header>
+    <span class="id">Ⅰ-3</span>
+    <span class="badge b-go">现在可分析</span>
+    <h3 style="flex-basis:100%;">分选门控里的 HLA-DR-low 髓系：发生残留还是疾病抑制态</h3>
+  </header>
+  <p>问句：早产血里 HLA-DR 低，是疾病诱导的抑制细胞，还是发生层没退干净？</p>
+  <p><strong>已锁主句：</strong>分选金标准不是血组成；四态失败；残留是假说方向，不是疾病证明。</p>
+  <table>
+    <tr><th>对象</th><th>用法</th></tr>
+    <tr><td>C GSE253963　72,766 细胞 / 9 库　CD11b⁺ HLA-DR<sup>low</sup></td><td>只给连续极。AD3 几乎是淋巴（中性粒 n=59）。T/B 与单核同向则停写髓系特异。</td></tr>
+    <tr><td>发生层（Ⅰ-1）</td><td>FBM 极低、肝中位 1.61，与 C 并列，不合对象。</td></tr>
+    <tr><td>A / B 未分选</td><td>只回答「血里看不看得见」，不提供「这是不是 MDSC」。</td></tr>
+  </table>
+  <details open>
+    <summary>分析步骤</summary>
+    <ol class="steps">
+      <li>C 内做 PAGA / 连续极，不训练四态分类器。</li>
+      <li>建嗜酸 vs 未成熟粒判别基因（给后面免疫度量用，本方向只锁极）。</li>
+      <li>Fig I3-1：C 的 HLA / S100 模块连续谱，供者着色，不画饼。</li>
+      <li>Fig I3-2：三栏对读——发生层 HLA、C 的极、A 出生窗单核 0.65。栏与栏不合 UMAP。</li>
+      <li>阴性：T/B 若与单核同向，图注停写髓系特异（C 的 AD3 已接近此）。</li>
+      <li>82502089 图 7 的「出生最高、随日龄下降」先按本方向残留假说写，不在本方向引入 LOS。</li>
+    </ol>
+  </details>
+  <div class="box no">
+    <h4>假证明</h4>
+    MDSC 图题；四态比例；分选比例 = 早产儿血象；C 写入 A/B 血饼；模型极写成人尺。
+  </div>
+</article>
+
+<article id="i6" class="dir">
+  <header>
+    <span class="id">Ⅰ-6</span>
+    <span class="badge b-go">现在可分析 · 极已降级</span>
+    <h3 style="flex-basis:100%;">血侧 HLA 模块现在能否暂当代尺</h3>
+  </header>
+  <p>问句：四态失败之后，供者级模块差（促炎核 − 抑制核）能不能在血与肠之间投影？</p>
+  <p><strong>已锁主句：</strong>四态失败；血侧先用 HLA 模块；极降级。血极只描述图谱，不证明疾病。</p>
+  <details open>
+    <summary>分析步骤</summary>
+    <ol class="steps">
+      <li>模块用已锁 <code>program_modules.tsv</code>。供者等权打分。粒/单核 &lt;20 细胞的供者出均数。</li>
+      <li>先报 HLA 模块（已过门），再报 inflam_core − suppress_core。S8 极失败必须写进结果，不改阈值救回来。</li>
+      <li>T/B 同向检验：同向则停写髓系特异。</li>
+      <li>禁止在 E（GSE233321）的 2000 HVG 上减 ARG1 极。</li>
+      <li>肠侧：Egozi 可试投，本方向只记「尚未过门」，不宣布跨舱室尺子做成。</li>
+      <li>模型 GSE276868 不问人尺，送到动物模型 8.8。</li>
+    </ol>
+  </details>
+  <div class="grid two">
+    <div class="box"><h4>图</h4>Fig I6-1 供者 HLA 模块（A/B/C 分面）。<br>Fig I6-2 S8 失败诚实图。<br>Fig I6-3 T/B 同向检验。</div>
+    <div class="box no"><h4>假证明</h4>跨舱室已可互换；发明疾病细胞类型；Meng Yao / 鼠低 MHC 簇写成人尺。</div>
+  </div>
+</article>
+
+<article id="i5" class="dir">
+  <header>
+    <span class="id">Ⅰ-5</span>
+    <span class="badge b-wait">方案先写 · 主矩阵未下</span>
+    <h3 style="flex-basis:100%;">胎儿回肠与结肠的免疫发生是否两套程序</h3>
+  </header>
+  <p>问句：NEC 偏爱末端回肠，是不是因为两段肠的免疫发生从来就不是一套程序？</p>
+  <p><strong>已锁主句：</strong>本题现在还不能写发现主句。先做分段坐标。不得写成健康早产肠，也不得写入坏死原发空间。</p>
+  <table>
+    <tr><th>数据</th><th>状态</th><th>角色</th></tr>
+    <tr><td>GSE158702 / GSE158328　8–22 PCW 回肠末端 vs 结肠，sc + Visium</td><td>开放未下载</td><td>本方向主对象。下载后才进发现尝试。</td></tr>
+    <tr><td>Pan-GI / Gut Cell Atlas</td><td>已落地，可进入坐标</td><td>生命期坐标。Non_pathological ≠ 健康早产。</td></tr>
+    <tr><td>Egozi</td><td>在肠坏死课题</td><td>下载后对读：更像回肠发生，还是更像损伤。不合池。</td></tr>
+  </table>
+  <details open>
+    <summary>分析步骤（有没有矩阵都按此写；有矩阵从第 2 步跑）</summary>
+    <ol class="steps">
+      <li><strong>现在：</strong>把分段坐标的变量表写死——部位（回肠末端 / 结肠）、PCW、谱系、制备。Pan-GI 只出生命期背景，不升对照。</li>
+      <li>下载后分套质控。Visium 与 sc 分对象，禁止为外观合张。</li>
+      <li>供者×部位伪 bulk。问髓系 / 上皮 / 基质程序差，不报健康组成饼。</li>
+      <li>Fig I5-1 回肠 vs 结肠模块差（点=供者）。</li>
+      <li>Fig I5-2 与 Egozi 损伤模块方向并列，各占一栏。不写「已经证明部位机制」。</li>
+      <li>空间臂只回答胎儿分段，不关闭人 NEC 原发空间空格。</li>
+    </ol>
+  </details>
+  <div class="box no">
+    <h4>假证明</h4>
+    已经证明回肠与结肠程序不同；Pan-GI 早产切片 = 对照；这就是坏死原发空间；健康早产肠已有。
+  </div>
+</article>
+
+<article id="i7" class="dir">
+  <header>
+    <span class="id">Ⅰ-7</span>
+    <span class="badge b-no">证不成 · 现在写限制页</span>
+    <h3 style="flex-basis:100%;">「这段肠相当于多少孕周」：坐标草案，不是量表</h3>
+  </header>
+  <p>问句：口吻能不能变成可外推量表？32 周附近有没有一次可重复免疫转换？</p>
+  <p><strong>已锁主句：</strong>量表还写不成。预印不得进主图。F28 已证明单供者细胞量会劫持时钟。</p>
+  <details open>
+    <summary>分析步骤</summary>
+    <ol class="steps">
+      <li>不做 Elastic Net / 可分享诊断包 / 临床成熟度 R 包。这不是本方向的产出。</li>
+      <li>Fig I7-1 限制页：列出健康端缺失、F28 劫持、Rothämel bioRxiv 715643 仅元数据。</li>
+      <li>若要用 Ⅰ-1/Ⅰ-2 坐标给别人的肠段打分，只报「落在哪一箱」，图注写「草案，不可外推」。</li>
+      <li>32 周换档：两端已占（A 的 48h、B 的两月）。中间预印只进文献卡。</li>
+      <li>肠坏死的「成熟度偏移」子问引用本限制页，不得反过来宣布量表做成。</li>
+    </ol>
+  </details>
+  <div class="box no">
+    <h4>假证明</h4>
+    已经有成熟度量表；已经证明 32 周换档；单供者细胞量很大所以可以当金标准。
+  </div>
+</article>
+
+<section id="objects" class="dir">
+  <header>
+    <span class="id">附录</span>
+    <h3 style="flex-basis:100%;">对象代号，发育部分只用这些</h3>
+  </header>
+  <table>
+    <tr><th>代号</th><th>研究</th><th>制备</th><th>进入</th><th>发育里干什么</th></tr>
+    <tr><td>A</td><td>GSE326288</td><td>新鲜 Ficoll PBMC</td><td>纳入分析 / 可进入发现</td><td>出生窗钟、HLA 对成人</td></tr>
+    <tr><td>B</td><td>GSE271413</td><td>裂红全血</td><td>纳入分析 / 可进入发现</td><td>日龄钟，不与 A 相连</td></tr>
+    <tr><td>C</td><td>GSE253963</td><td>FACS 分选</td><td>纳入分析 / 可进入发现</td><td>极，不进饼</td></tr>
+    <tr><td>E</td><td>GSE233321</td><td>冻 PBMC</td><td>纳入分析 / 可进入坐标</td><td>寿命箱，左端挖洞</td></tr>
+    <tr><td>发生-肝</td><td>E-MTAB-7407</td><td>胎肝 CD45+</td><td>可进入坐标</td><td>Ⅰ-1 工厂左柱</td></tr>
+    <tr><td>发生-髓</td><td>Jardine 整倍体</td><td>胎骨髓</td><td>可进入坐标</td><td>Ⅰ-1 工厂右柱</td></tr>
+    <tr><td>NRBC</td><td>GSE164120</td><td>脐血 CD71+</td><td>可进入发现</td><td>1.4 质控</td></tr>
+    <tr><td>池化反例</td><td>GSE301989</td><td>12h 池化 PBMC</td><td>仅坐标</td><td>不能当供者</td></tr>
+    <tr><td>肠坐标</td><td>Pan-GI</td><td>生命期肠</td><td>可进入坐标</td><td>Ⅰ-5 背景，不是健康对照</td></tr>
+    <tr><td>肠主对象</td><td>GSE158702/328</td><td>胎儿分段</td><td>开放未下载</td><td>Ⅰ-5 主分析</td></tr>
+  </table>
+  <p class="lead">胃液、EOS 三套、NeoVanc、Egozi 主发现、猪换档都不进本页主分析。它们走各自课题。发育只借出三时钟图和限制页。</p>
+</section>
+</main>
+
+<footer>
+  口径来自飞书领域科学问题 1.1–1.5、2.1–2.6、6.1 与科学问题 Ⅰ-1～Ⅰ-7 已锁主句。纳排现场 2026-09-10。本页是分析方案，不是结果论文。
+</footer>
+</body>
+</html>
