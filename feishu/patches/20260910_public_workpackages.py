@@ -36,6 +36,7 @@ T_PRIN = "tblbJyzy6pXRgBf6"
 T_DOMAIN = "tbl6gGWIjJK4EHuC"
 DATE = "2026-09-10"
 MARK = "有机整合 · 2026-09-10"
+SPLIT = "分计划 · 2026-09-10"
 
 
 def session() -> requests.Session:
@@ -175,21 +176,31 @@ IMPL_ACTION = {
     ),
     "早发感染": (
         f"{MARK}\n"
-        "与「晚发感染」共用分时相框架，分析必须分章，禁止硬合并成一张败血症图。\n"
-        "步骤：①三套全血分研究解卷积 ②等「免疫度量」交出新生儿参考再重跑一版 "
-        "③胃液只模块对读，不合血图 ④年龄外推的着色在「外群与方法」。\n"
-        "人员：对接陈绘宇 / 蒋胃液。\n"
-        "禁令：禁止 meta。参照必须新生儿全血。GSE236099 不进本课题主图。"
+        "早发败血症独立计划。垂直感染、出生转换窗。不与晚发共用分析设计、排期或图题。\n"
+        "数据：GSE69686、E-MTAB-4785、SDY1538。胃液只在本计划做宿主模块对读。"
+        "羊水在「监护环境」，本计划不搬矩阵。\n"
+        "步骤：①三套各自质控、分研究解卷积 ②组成一栏、校正后状态一栏 "
+        "③参照只用新生儿全血 ④等「免疫度量」交出参考后，只在本计划重跑 "
+        "⑤胃液 LCN2/MMP8/S100/IL-6 与三套对读，不合矩阵 ⑥写早发组成文。\n"
+        "产出：早发全血组成图 + 胃液对读表。人员：蒋胃液主持；陈绘宇只参与本计划。"
+        "工期：现在开工，2–3 月。不等 HRA、不等 NeoVanc。\n"
+        "本计划不含：HRA019867、NeoVanc、GSE138712、GSE236099、感染前血、LOS 预警模型。\n"
+        "禁令：禁止与晚发写进同一份计划或同一张「败血症」图。禁止三套 meta。"
     ),
     "晚发感染": (
         f"{MARK}\n"
-        "分时相的晚发章。易感窗和病原分层是本课题子问。\n"
-        "步骤：①申请 HRA019867 ②下 NeoVanc、GSE138712（治疗日，不是未分选极） "
-        "③GSE236099 只作混合自身对照，不当 LOS 主集 "
-        "④子问-易感窗：借用「发育坐标」标时点，发病前点不是健康点 "
-        "⑤子问-病原：HRA 字段有分层再做，没有就停。\n"
-        "人员：对接陈绘宇，约 3 月。\n"
-        "禁令：未获批不画结果图。不与早发合图。公开未分选 LOS 单细胞仍空。"
+        "晚发败血症独立计划。医院获得、住院期防御真空。不与早发共用分析设计、排期或图题。\n"
+        "数据：申请 HRA019867；下载 E-MTAB-15687 NeoVanc、GSE138712。"
+        "GSE236099 只当「不是 LOS 主集」的反例，不进主分析。\n"
+        "步骤：①本周申请 HRA，未获批不画结果 ②先下两套治疗日全血 "
+        "③确诊与可能感染分臂 ④只问治疗后宿主程序随治疗日怎么变 "
+        "⑤易感窗子问：在「发育坐标」上标住院时点，发病前点不是健康点 "
+        "⑥HRA 元数据有病原分层再做分类器，没有就停 ⑦空格 4.3/4.5 当本计划设计页。\n"
+        "产出：晚发治疗日轴 + 公开 LOS 空格页。人员：陈绘宇主做晚发；双结对/预警只引用本计划。"
+        "工期：申请 4–8 周与下载并行；分析约 3 月。与早发同时开工，但是另一份计划。\n"
+        "本计划不含：EOS 三套主分析、胃液矩阵、早发解卷积主文。\n"
+        "禁令：禁止与早发共用计划或「新生儿败血症」标题。公开未分选 LOS 单细胞仍空。"
+        "借「免疫度量」尺子只投影，不把出生窗写成 LOS 基线。"
     ),
     "肺与共病": (
         f"{MARK}\n"
@@ -225,13 +236,15 @@ IMPL_ACTION = {
         "步骤：①GSE279452 只外推着色 ②与出生窗、分选极分年龄并列 "
         "③交「成人文献不得代替新生儿」边界 ④UC 外群只校准肠坏死的通用炎症。\n"
         "禁令：不画新生儿败血症整合图。不与 GSE236099 合并。"
+        "本课题不是早发或晚发的第三份计划，只给两份独立计划提供外推着色。"
     ),
     "本队列与标书": (
         f"{MARK}\n"
         "第三引擎。不新建公开课题，只引用上面课题已经在做的产出。\n"
         "洪 →「免疫度量」去 MDSC 图题 +「肠坏死」方向表（讨论用，不当肠源性证明）。\n"
         "黄 →「肠坏死」图谱；AhR 先选成纤维、先选 NEC。\n"
-        "蒋 →「早发感染」胃液对读；「晚发感染」分章；「监护环境」治疗暴露（不是 LTi）。\n"
+        "蒋胃液 → 只进「早发感染」独立计划。蒋分型 / LOS 预警 → 只进「晚发感染」独立计划。\n"
+        "蒋抗菌 →「监护环境」治疗暴露（不是 LTi）。两份败血症计划不合并。\n"
         "曹 →「监护环境」缺失图 + 营养子问。\n"
         "近季表已清空。组会按本表 11 个课题开工。"
     ),
@@ -241,8 +254,8 @@ IMPL_EXTRA = {
     "发育坐标": f"{MARK} 人员：跨数据集整合 1 人。产出被免疫度量、肠坏死成熟度子问、晚发易感窗子问引用。",
     "免疫度量": f"{MARK} 人员：注释 1 人，与发育坐标同环境。产出被 82502089 与肠坏死共享髓系子问引用。",
     "肠坏死": f"{MARK} 人员：黄一璜 / 曹芯诚。成熟度借发育坐标，血侧空格借晚发，边界借动物模型。",
-    "早发感染": f"{MARK} 人员：陈绘宇 / 蒋。与晚发对读，不合图。",
-    "晚发感染": f"{MARK} 人员：陈绘宇。易感窗借发育坐标。HRA 专人跟申请。",
+    "早发感染": f"{MARK} 独立计划。蒋胃液 + 陈绘宇（早发侧）。现在开工。不含晚发任何数据集。",
+    "晚发感染": f"{MARK} 独立计划。陈绘宇主做晚发。HRA 专人跟申请。不含 EOS 三套主分析。",
     "肺与共病": f"{MARK} 人员：指定一人跑 dbGaP/EGA，不宜分散。",
     "监护环境": f"{MARK} 人员：张樱彦 / 郭欣惠、曹。猪矩阵不搬进本课题主对象。",
     "动物模型": f"{MARK} 人员：刘璨。边界表是给别人引用的公共品。",
@@ -279,8 +292,28 @@ def main() -> None:
         new_fields = {"立刻动作": action}
         extra = IMPL_EXTRA.get(name)
         if extra:
-            new_fields["5. 个人还需补充"] = append_note(fields.get("5. 个人还需补充"), extra)
+            if name in {"早发感染", "晚发感染", "本队列与标书"}:
+                merged_extra = append_note(fields.get("5. 个人还需补充"), extra)
+                if SPLIT not in field_text(fields.get("5. 个人还需补充")):
+                    merged_extra = append_note(
+                        merged_extra,
+                        f"{SPLIT} 早发与晚发两份独立计划，不共用开工单。",
+                    )
+                new_fields["5. 个人还需补充"] = merged_extra
+            else:
+                new_fields["5. 个人还需补充"] = append_note(
+                    fields.get("5. 个人还需补充"), extra
+                )
         new_joint = append_note(fields.get("3. 能否联合分析"), JOINT_LINE)
+        if name in {"早发感染", "晚发感染"} and SPLIT not in field_text(
+            fields.get("3. 能否联合分析")
+        ):
+            other = "晚发感染" if name == "早发感染" else "早发感染"
+            new_joint = (
+                new_joint.rstrip()
+                + "\n\n"
+                + f"{SPLIT} 本课题与「{other}」不能联合分析，不能共用设计、参照或图题。"
+            )
         if new_joint != field_text(fields.get("3. 能否联合分析")):
             new_fields["3. 能否联合分析"] = new_joint
         impl_patch.append({"record_id": rec["record_id"], "fields": new_fields})
@@ -290,10 +323,42 @@ def main() -> None:
         log["updated"]["impl"] = [x["record_id"] for x in impl_patch]
 
     prin_rows = list_all(s, T_PRIN)
-    if any(
-        r["fields"].get("次序") == 33 or str(r["fields"].get("次序")) == "33" for r in prin_rows
-    ):
-        print("原则 33 exists")
+    prin33 = next(
+        (
+            r
+            for r in prin_rows
+            if r["fields"].get("次序") == 33 or str(r["fields"].get("次序")) == "33"
+        ),
+        None,
+    )
+    prin33_text = (
+        "执行单位是课题落实。近季优先课题整表删除。"
+        "汇报中的 P0/P1/交叉是课题内部的开工包和子问，不是新课题。"
+        "有机整合：成熟度、共享髓系、易感窗、远隔、治疗暴露留在已经在问的课题里，"
+        "借用其它课题锁住的尺子或空格，分栏对读。"
+        "早发感染与晚发感染必须两份独立计划：数据、步骤、产出、人员、工期各写各的。"
+        "硬合并：不同对象、对照宇宙、物种或早发/晚发画进同一张图或同一份开工单，或把交叉立成第六条主线。"
+        "不新增第 10 层或第 35 张科学问题卡。"
+    )
+    if prin33:
+        if "两份独立计划" not in field_text((prin33.get("fields") or {}).get("说明")):
+            batch_update(
+                s,
+                T_PRIN,
+                [
+                    {
+                        "record_id": prin33["record_id"],
+                        "fields": {
+                            "原则": "交叉问法挂在已有课题里；早发与晚发分开计划",
+                            "说明": prin33_text,
+                        },
+                    }
+                ],
+            )
+            log["updated"]["原则33"] = prin33["record_id"]
+            print("updated 原则 33")
+        else:
+            print("原则 33 exists")
     else:
         created = batch_create(
             s,
@@ -302,15 +367,8 @@ def main() -> None:
                 {
                     "fields": {
                         "次序": 33,
-                        "原则": "交叉问法挂在已有课题里，不硬合并、不另开近季",
-                        "说明": (
-                            "执行单位是课题落实。近季优先课题整表删除。"
-                            "汇报中的 P0/P1/交叉是课题内部的开工包和子问，不是新课题。"
-                            "有机整合：成熟度、共享髓系、易感窗、远隔、治疗暴露留在已经在问的课题里，"
-                            "借用其它课题锁住的尺子或空格，分栏对读。"
-                            "硬合并：不同对象、对照宇宙、物种或早发/晚发画进同一张图，或把交叉立成第六条主线。"
-                            "不新增第 10 层或第 35 张科学问题卡。"
-                        ),
+                        "原则": "交叉问法挂在已有课题里；早发与晚发分开计划",
+                        "说明": prin33_text,
                     }
                 }
             ],
@@ -364,6 +422,32 @@ def main() -> None:
         batch_update(s, T_CAT, cat_patch)
         log["updated"]["catalog"] = [x["record_id"] for x in cat_patch]
         print("updated catalog", len(cat_patch))
+
+    for rec in list_all(s, T_CAT):
+        if field_text((rec.get("fields") or {}).get("大块编号")) != "Ⅲ":
+            continue
+        fields = rec.get("fields") or {}
+        if SPLIT in field_text(fields.get("现行进展")):
+            print("skip cat Ⅲ split")
+            break
+        batch_update(
+            s,
+            T_CAT,
+            [
+                {
+                    "record_id": rec["record_id"],
+                    "fields": {
+                        "现行进展": append_note(
+                            fields.get("现行进展"),
+                            f"{SPLIT} 早发感染与晚发感染两份独立计划，不共用开工单、排期或图题。",
+                        )
+                    },
+                }
+            ],
+        )
+        log["updated"]["catalog_III"] = rec["record_id"]
+        print("updated catalog Ⅲ split")
+        break
 
     leftover = list_all(s, T_NEAR)
     log["near_remaining"] = [
