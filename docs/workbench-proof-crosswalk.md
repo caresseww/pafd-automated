@@ -194,3 +194,5 @@ UTI ≠ LOS。同源逻辑可以迁移到肠源性 LOS，细胞程序不能。�
 | 近季优先课题 | 第 7 项 | `recvuH1juiF4Ks` |
 | 分析方法 | `tx-forbid-grant-noun` | `recvuH1kMEKlml` |
 | 科学问题总目录 | Ⅱ / Ⅲ / Ⅴ 各补一句工作台接口 | 原记录追加 |
+
+每人每题如何用转录组库赋能（公开组合七句 + A/B/C/D 用法）见 `docs/workbench-tx-empowerment.md`。
